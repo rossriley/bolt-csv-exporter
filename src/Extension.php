@@ -77,10 +77,8 @@ class Extension extends SimpleExtension
             return new CsvResponse([]);
         }
 
-        $recordsToExport = $migrationOutput[1];
-        dump($migrationOutput); exit;
         $outputData = [];
-        foreach ((array)$recordsToExport as $record) {
+        foreach ($migrationOutput[$ct] as $record) {
             $compiled = [];
             foreach ($record as $fieldname => $field) {
                 if (isset($config['mappings'][$ct][$fieldname])) {
