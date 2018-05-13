@@ -1,0 +1,18 @@
+##
+## Bolt Csv Export configuration options
+##
+
+## List of contenttype that are excluded from export
+disabled:
+    - showcases
+
+## Define field name mappings from bolt name to CSV column name
+## Any fields not mapped will use the default name
+## You can set the mapping to `false` to skip exporting a column
+#
+# mappings:
+#     pages:
+#        title: Page Title
+#        slug: false
+
+

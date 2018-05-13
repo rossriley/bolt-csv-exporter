@@ -1,0 +1,47 @@
+{
+    "name": "rossriley/bolt-csv-export",
+    "description": "Export Bolt Content-types as CSV",
+    "type": "bolt-extension",
+    "keywords": [
+        "csv",
+        "export"
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "bolt/bolt": "^3.4"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-master",
+        "phpunit/phpunit": "^6.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ross Riley",
+            "email": "riley.ross@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "name": "bolt",
+            "type": "composer",
+            "url": "https://extensions.bolt.cm/satis/"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Bolt\\Extension\\CsvExport\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bolt\\Extension\\CsvExport\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "bolt-assets": "web",
+        "bolt-class": "Bolt\\Extension\\CsvExport\\Extension"
+    }
+}
