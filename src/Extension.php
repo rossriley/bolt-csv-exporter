@@ -5,6 +5,7 @@ namespace Bolt\Extension\CsvExport;
 use Bolt\Collection\Bag;
 use Bolt\Collection\MutableBag;
 use Bolt\EventListener\RedirectListener;
+use Bolt\Exception\InvalidRepositoryException;
 use Bolt\Extension\SimpleExtension;
 use Bolt\Menu\MenuEntry;
 use Bolt\Storage\Migration\Export;
@@ -61,21 +62,22 @@ class Extension extends SimpleExtension
         $app = $this->getContainer();
         $config = $this->getConfig();
         $ct = $request->get('contenttype');
+
+        // We shouldn't be able to get here with an invalid CT but if we do, just use an empty array
         if (!$this->canExport($ct)) {
-            return;
-        }
-
-        $data = [];
-
-        $records = $app['query']->getContent($ct);
-
-        if (!count($records)) {
             return new CsvResponse([]);
         }
 
         $responseBag = MutableBag::fromRecursive(['error' => [], 'warning' => [], 'success' => []]);
         $migration = new Export($app['storage'], $app['query']);
-        $recordsToExport = $migration->run([$ct], $responseBag, false);
+
+        try {
+            $migrationOutput = $migration->run([$ct], $responseBag, false);
+        } catch (InvalidRepositoryException $e) {
+            return new CsvResponse([]);
+        }
+
+        list($metadata, $recordsToExport) = $migrationOutput;
 
         foreach ($recordsToExport as $record) {
             $compiled = [];
