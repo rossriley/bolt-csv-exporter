@@ -73,16 +73,25 @@ class Extension extends SimpleExtension
 
         $headers = [];
         foreach ($records as $record) {
+            $compiled = [];
             if (!count($headers)) {
                 $headers = array_keys($record->toArray());
+                foreach ($headers as &$header) {
+
+                }
             }
-            $data[] = array_values($record->toArray());
+            foreach ($record->toArray() as $fieldname => $field) {
+                if (isset($config['mappings'][$ct][$fieldname])) {
+                    $outputKey = $config['mappings'][$ct][$fieldname];
+                }
+                $outputVal = (string)$field;
+                $compiled[$outputKey] = $outputVal;
+            }
+            $data[] = $compiled;
         }
+        dump($data); exit;
 
         return new CsvResponse($data);
-
-
-        return new CsvResponse($records);
     }
 
     /**
