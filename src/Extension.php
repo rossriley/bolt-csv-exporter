@@ -31,8 +31,9 @@ class Extension extends SimpleExtension
     {
         $config = $this->getConfig();
         $roles = isset($config['roles']['admin']) ? $config['roles']['admin'] : ['root'];
+        $prefix = $this->getContainer()['controller.backend.mount_prefix'];
 
-        $parent = (new MenuEntry('export', 'export'))
+        $parent = (new MenuEntry('export'))
             ->setLabel(Trans::__('CSV Export'))
             ->setIcon('fa:file')
             ->setPermission(implode('||', $roles))
@@ -41,7 +42,7 @@ class Extension extends SimpleExtension
 
         foreach ($this->getAvailableExports() as $key => $export) {
             $parent->add(
-                (new MenuEntry('export '. $key, '/export/'.$key))
+                (new MenuEntry('export '. $key, $prefix . '/export/'.$key))
                     ->setLabel('Export ' . $export['name'])
                     ->setIcon('fa:file')
             );
@@ -55,8 +56,7 @@ class Extension extends SimpleExtension
      */
     protected function registerBackendRoutes(ControllerCollection $collection)
     {
-        $prefix = $this->getContainer()['controller.backend.mount_prefix'];
-        $collection->get($prefix . '/export/{contenttype}', [$this, 'doExport']);
+        $collection->get('/export/{contenttype}', [$this, 'doExport']);
     }
 
     public function doExport(Request $request)
