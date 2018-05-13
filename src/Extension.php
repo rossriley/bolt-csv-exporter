@@ -79,7 +79,7 @@ class Extension extends SimpleExtension
 
         foreach ($recordsToExport as $record) {
             $compiled = [];
-            foreach ($record->toArray() as $fieldname => $field) {
+            foreach ($record as $fieldname => $field) {
                 if (isset($config['mappings'][$ct][$fieldname])) {
                     $outputKey = $config['mappings'][$ct][$fieldname];
                 } else {
