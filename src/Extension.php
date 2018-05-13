@@ -3,11 +3,13 @@
 namespace Bolt\Extension\CsvExport;
 
 use Bolt\Collection\Bag;
+use Bolt\EventListener\RedirectListener;
 use Bolt\Extension\SimpleExtension;
 use Bolt\Menu\MenuEntry;
 use Bolt\Translation\Translator as Trans;
 use Silex\Application;
 use Silex\ControllerCollection;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -23,8 +25,8 @@ class Extension extends SimpleExtension
 
     protected function registerMenuEntries()
     {
+        $config = $this->getConfig();
         $roles = isset($config['roles']['admin']) ? $config['roles']['admin'] : ['root'];
-
 
         $parent = (new MenuEntry('export', 'export'))
             ->setLabel(Trans::__('CSV Export'))
@@ -41,11 +43,7 @@ class Extension extends SimpleExtension
             );
         }
 
-        return [
-            $parent
-        ];
-
-
+        return [$parent];
     }
 
     /**
@@ -58,14 +56,37 @@ class Extension extends SimpleExtension
 
     public function doExport(Request $request)
     {
+        $app = $this->getContainer();
+        $config = $this->getConfig();
         $ct = $request->get('contenttype');
         if (!$this->canExport($ct)) {
-            throw new AccessDeniedHttpException();
+            return;
         }
+
+        $data = [];
+
+        $records = $app['query']->getContent($ct);
+
+        if (!count($records)) {
+            return new CsvResponse([]);
+        }
+
+        $headers = [];
+        foreach ($records as $record) {
+            if (!count($headers)) {
+                $headers = array_keys($record->toArray());
+            }
+            $data[] = array_values($record->toArray());
+        }
+
+        return new CsvResponse($data);
+
+
+        return new CsvResponse($records);
     }
 
     /**
-     *
+     * @return Bag
      */
     protected function getAvailableExports()
     {
@@ -77,7 +98,7 @@ class Extension extends SimpleExtension
             if (!is_array($config['disabled'])) {
                 return true;
             }
-            if (!in_array($key, $config['disabled'])) {
+            if (!in_array($key, $config['disabled'], true)) {
                 return true;
             }
         });
