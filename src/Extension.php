@@ -3,14 +3,11 @@
 namespace Bolt\Extension\CsvExport;
 
 use Bolt\Collection\Bag;
-use Bolt\Events\ControllerEvents;
-use Bolt\Extension\ConfigTrait;
-use Bolt\Extension\ControllerMountTrait;
-use Bolt\Extension\DatabaseSchemaTrait;
-use Bolt\Extension\MenuTrait;
 use Bolt\Extension\SimpleExtension;
 use Bolt\Menu\MenuEntry;
 use Bolt\Translation\Translator as Trans;
+use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Csv Export extension for Bolt
@@ -28,23 +25,27 @@ class Extension extends SimpleExtension
         $config = $this->getConfig();
         $roles = isset($config['roles']['admin']) ? $config['roles']['admin'] : ['root'];
         $contentTypes = Bag::from($app['config']->get('contenttypes'));
+
         $exports = $contentTypes->filter(function($key, $item) use ($config) {
-            if (in_array($key, $config['disabled'], true)) {
-                return false;
+            if (!is_array($config['disabled'])) {
+                return true;
+            }
+            if (!in_array($key, $config['disabled'])) {
+                return true;
             }
         });
 
         $parent = (new MenuEntry('export', 'export'))
-                ->setLabel(Trans::__('CSV Export'))
-                ->setIcon('fa:file')
-                ->setPermission(implode('||', $roles))
-                ->setGroup(true)
+            ->setLabel(Trans::__('CSV Export'))
+            ->setIcon('fa:file')
+            ->setPermission(implode('||', $roles))
+            ->setGroup(true)
         ;
 
         foreach ($exports as $key => $export) {
             $parent->add(
                 (new MenuEntry('export '. $key, '/export/'.$key))
-                    ->setLabel('Export ' . $export['label'])
+                    ->setLabel('Export ' . $export['name'])
                     ->setIcon('fa:file')
             );
         }
@@ -54,6 +55,19 @@ class Extension extends SimpleExtension
         ];
 
 
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function registerBackendRoutes(ControllerCollection $collection)
+    {
+        $collection->get('/export/{contenttype}', [$this, 'doExport']);
+    }
+
+    public function doExport(Request $request, $content)
+    {
+        dump($request, $content); exit;
     }
 
 }
