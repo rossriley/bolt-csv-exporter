@@ -3,9 +3,11 @@
 namespace Bolt\Extension\CsvExport;
 
 use Bolt\Collection\Bag;
+use Bolt\Collection\MutableBag;
 use Bolt\EventListener\RedirectListener;
 use Bolt\Extension\SimpleExtension;
 use Bolt\Menu\MenuEntry;
+use Bolt\Storage\Migration\Export;
 use Bolt\Translation\Translator as Trans;
 use Silex\Application;
 use Silex\ControllerCollection;
@@ -71,7 +73,11 @@ class Extension extends SimpleExtension
             return new CsvResponse([]);
         }
 
-        foreach ($records as $record) {
+        $responseBag = MutableBag::from([]);
+        $migration = new Export($app['storage'], $app['query']);
+        $migration->run([$ct], $responseBag, false);
+
+        foreach ($responseBag->toArrayRecursive() as $record) {
             $compiled = [];
             foreach ($record->toArray() as $fieldname => $field) {
                 if (isset($config['mappings'][$ct][$fieldname])) {
@@ -79,7 +85,7 @@ class Extension extends SimpleExtension
                 } else {
                     $outputKey = $fieldname;
                 }
-                $outputVal = (string)$field;
+                $outputVal = $field;
                 $compiled[$outputKey] = $outputVal;
             }
             $data[] = $compiled;
