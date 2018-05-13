@@ -91,7 +91,6 @@ class Extension extends SimpleExtension
             }
             $outputData[] = $compiled;
         }
-        dump($outputData); exit;
 
         return new CsvResponse($data);
     }
