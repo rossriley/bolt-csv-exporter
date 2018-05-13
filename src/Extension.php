@@ -55,7 +55,8 @@ class Extension extends SimpleExtension
      */
     protected function registerBackendRoutes(ControllerCollection $collection)
     {
-        $collection->get('/export/{contenttype}', [$this, 'doExport']);
+        $prefix = $this->getContainer()['controller.backend.mount_prefix'];
+        $collection->get($prefix . '/export/{contenttype}', [$this, 'doExport']);
     }
 
     public function doExport(Request $request)
