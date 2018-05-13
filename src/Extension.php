@@ -73,11 +73,11 @@ class Extension extends SimpleExtension
             return new CsvResponse([]);
         }
 
-        $responseBag = MutableBag::from([]);
+        $responseBag = MutableBag::fromRecursive(['error' => [], 'warning' => [], 'success' => []]);
         $migration = new Export($app['storage'], $app['query']);
-        $migration->run([$ct], $responseBag, false);
+        $recordsToExport = $migration->run([$ct], $responseBag, false);
 
-        foreach ($responseBag->toArrayRecursive() as $record) {
+        foreach ($recordsToExport as $record) {
             $compiled = [];
             foreach ($record->toArray() as $fieldname => $field) {
                 if (isset($config['mappings'][$ct][$fieldname])) {
