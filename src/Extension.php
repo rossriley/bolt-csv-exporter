@@ -9,6 +9,7 @@ use Bolt\Exception\InvalidRepositoryException;
 use Bolt\Extension\SimpleExtension;
 use Bolt\Menu\MenuEntry;
 use Bolt\Storage\Migration\Export;
+use Bolt\Storage\Query\QueryResultset;
 use Bolt\Translation\Translator as Trans;
 use Silex\Application;
 use Silex\ControllerCollection;
@@ -68,31 +69,70 @@ class Extension extends SimpleExtension
             return new CsvResponse([]);
         }
 
-        $responseBag = MutableBag::fromRecursive(['error' => [], 'warning' => [], 'success' => []]);
-        $migration = new Export($app['storage'], $app['query']);
-
-        try {
-            $migrationOutput = $migration->run([$ct], $responseBag, false);
-        } catch (InvalidRepositoryException $e) {
-            return new CsvResponse([]);
-        }
+        /** @var QueryResultset $allRecords */
+        $allRecords = $app['query']->getContent($ct);
 
         $outputData = [];
-        foreach ($migrationOutput[$ct] as $record) {
+        foreach ($allRecords as $record) {
             $compiled = [];
-            foreach ($record as $fieldname => $field) {
-                if (isset($config['mappings'][$ct][$fieldname])) {
-                    $outputKey = $config['mappings'][$ct][$fieldname];
-                } else {
-                    $outputKey = $fieldname;
+            $record = $this->processRecord($ct, $record);
+            foreach ($record as $fieldName => $field) {
+                $outputKey = isset($config['mappings'][$ct][$fieldName]) ? $config['mappings'][$ct][$fieldName]: $fieldName;
+
+                if ($outputKey === false) {
+                    continue;
                 }
-                $outputVal = $field;
+
+                $outputVal = $this->serializeField($field);
                 $compiled[$outputKey] = $outputVal;
             }
             $outputData[] = $compiled;
         }
+        dump($outputData); exit;
 
         return new CsvResponse($outputData);
+    }
+
+    /**
+     * Method that can be called recursively to handle flattening field values
+     * @param $field
+     * @return string
+     */
+    public function serializeField($field)
+    {
+        $output = '';
+        if (is_array($field)) {
+            foreach ($field as $item) {
+                $output .= $this->serializeField($item) . ',';
+            }
+        } else {
+            $output .= $field . ',';
+        }
+
+        return rtrim($output, ',');
+    }
+
+    protected function processRecord($contentType, $record)
+    {
+        $app = $this->getContainer();
+        $repo = $app['storage']->getRepository($contentType);
+        $metadata = $repo->getClassMetadata();
+        $values = [];
+
+        foreach ($metadata->getFieldMappings() as $field) {
+            $fieldName = $field['fieldname'];
+            $val = $record->$fieldName;
+            if (in_array($field['type'], ['date', 'datetime'])) {
+                $val = (string) $record->$fieldName;
+            }
+            if (is_callable([$val, 'serialize'])) {
+                /** @var Entity $val */
+                $val = $val->serialize();
+            }
+            $values[$fieldName] = $val;
+        }
+
+        return $values;
     }
 
     /**
