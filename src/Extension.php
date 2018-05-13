@@ -66,9 +66,9 @@ class Extension extends SimpleExtension
         $collection->get('/export/{contenttype}', [$this, 'doExport']);
     }
 
-    public function doExport(Request $request, $content)
+    public function doExport(Request $request)
     {
-        dump($request, $content); exit;
+        dump($request); exit;
     }
 
 }
