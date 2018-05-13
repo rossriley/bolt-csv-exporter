@@ -71,18 +71,13 @@ class Extension extends SimpleExtension
             return new CsvResponse([]);
         }
 
-        $headers = [];
         foreach ($records as $record) {
             $compiled = [];
-            if (!count($headers)) {
-                $headers = array_keys($record->toArray());
-                foreach ($headers as &$header) {
-
-                }
-            }
             foreach ($record->toArray() as $fieldname => $field) {
                 if (isset($config['mappings'][$ct][$fieldname])) {
                     $outputKey = $config['mappings'][$ct][$fieldname];
+                } else {
+                    $outputKey = $fieldname;
                 }
                 $outputVal = (string)$field;
                 $compiled[$outputKey] = $outputVal;
