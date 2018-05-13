@@ -21,8 +21,6 @@ use Bolt\Translation\Translator as Trans;
  */
 class Extension extends SimpleExtension
 {
-    use ConfigTrait;
-    use MenuTrait;
 
     protected function registerMenuEntries()
     {
