@@ -78,7 +78,7 @@ class Extension extends SimpleExtension
         }
 
         $recordsToExport = $migrationOutput[1];
-        dump($recordsToExport); exit;
+        dump($migrationOutput); exit;
         $outputData = [];
         foreach ((array)$recordsToExport as $record) {
             $compiled = [];
