@@ -89,7 +89,7 @@ class Extension extends SimpleExtension
     {
         $exports = $this->getAvailableExports();
 
-        return $exports->findKey($ct);
+        return $exports->has($ct);
     }
 
 }
