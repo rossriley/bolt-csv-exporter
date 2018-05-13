@@ -88,9 +88,17 @@ class Extension extends SimpleExtension
             }
             $outputData[] = $compiled;
         }
-        dump($outputData); exit;
+        if (count($outputData)) {
+            $headers = array_keys($outputData[0]);
+        }
 
-        return new CsvResponse($outputData);
+        $csvData = [];
+        $csvData[] = $headers;
+        foreach ($outputData as $csvRow){
+            $csvData[] = array_values($csvRow);
+        }
+
+        return new CsvResponse($csvData);
     }
 
     /**
