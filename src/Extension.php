@@ -59,6 +59,10 @@ class Extension extends SimpleExtension
             );
         }
 
+        return [
+            $parent
+        ];
+
 
     }
 
