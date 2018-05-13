@@ -9,9 +9,6 @@ use Bolt\Extension\ControllerMountTrait;
 use Bolt\Extension\DatabaseSchemaTrait;
 use Bolt\Extension\MenuTrait;
 use Bolt\Extension\SimpleExtension;
-use Bolt\Extension\StorageTrait;
-use Bolt\Extension\TwigTrait;
-use Bolt\Extension\TranslationTrait;
 use Bolt\Menu\MenuEntry;
 use Bolt\Translation\Translator as Trans;
 
@@ -25,12 +22,7 @@ use Bolt\Translation\Translator as Trans;
 class Extension extends SimpleExtension
 {
     use ConfigTrait;
-    use ControllerMountTrait;
-    use DatabaseSchemaTrait;
     use MenuTrait;
-    use StorageTrait;
-    use TwigTrait;
-    use TranslationTrait;
 
     protected function registerMenuEntries()
     {
