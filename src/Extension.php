@@ -7,6 +7,7 @@ use Bolt\Extension\SimpleExtension;
 use Bolt\Menu\MenuEntry;
 use Bolt\Translation\Translator as Trans;
 use Silex\Application;
+use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
