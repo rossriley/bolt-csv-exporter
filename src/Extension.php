@@ -30,13 +30,13 @@ class Extension extends SimpleExtension
     protected function registerMenuEntries()
     {
         $config = $this->getConfig();
-        $roles = isset($config['roles']['admin']) ? $config['roles']['admin'] : ['root'];
         $prefix = $this->getContainer()['controller.backend.mount_prefix'];
+        $permission = $config['permission'] ? $config['permission']: 'contenttype-action';
 
         $parent = (new MenuEntry('export'))
             ->setLabel(Trans::__('CSV Export'))
             ->setIcon('fa:file')
-            ->setPermission(implode('||', $roles))
+            ->setPermission($permission)
             ->setGroup(true)
         ;
 

@@ -15,4 +15,4 @@ disabled:
 #        title: Page Title
 #        slug: false
 
-
+permission: contenttype:action
