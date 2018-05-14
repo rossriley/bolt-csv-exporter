@@ -22,6 +22,7 @@ class CsvResponse extends Response
         $output = fopen('php://temp', 'r+');
 
         foreach ($data as $row) {
+            fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
             fputcsv($output, $row);
         }
 
