@@ -21,4 +21,5 @@ If you want to omit a specific field from the export then set the mapping to `fa
 will be skipped.
 
 Finally you can adjust the permission of Bolt users that are allowed to use the export functionality
-it defaults to `contenttype-acti`
+it defaults to `contentaction` but you can change this or add your own permission to Bolt specifically
+for this extension.
