@@ -1,4 +1,4 @@
-## A CSV Content-Type Exported for Bolt 3.4+
+## A CSV Content-Type Exporter for Bolt 3.4+
 
 This is a lightweight CSV exporter that by default adds a new CSV export menu with a link to export
 each available content-type in your installation.
