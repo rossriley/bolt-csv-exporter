@@ -99,7 +99,7 @@ class Extension extends SimpleExtension
             $csvData[] = array_values($csvRow);
         }
 
-        return new CsvResponse($csvData);
+        return new CsvResponse($csvData, $ct);
     }
 
     /**
