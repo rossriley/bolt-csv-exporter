@@ -20,6 +20,7 @@ class CsvResponse extends Response
     public function setData(array $data)
     {
         $output = fopen('php://temp', 'r+');
+        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
 
         foreach ($data as $row) {
             fputcsv($output, $row);
