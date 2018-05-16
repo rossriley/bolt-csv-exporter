@@ -15,4 +15,10 @@ disabled:
 #        title: Page Title
 #        slug: false
 
+## Define file names for each contenttype export
+## Any contenttype not set will just use the contenttype name
+#
+# file_names:
+#     pages: "Pages export"
+
 permission: contentaction

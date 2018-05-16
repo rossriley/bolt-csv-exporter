@@ -8,12 +8,13 @@ class CsvResponse extends Response
 {
     protected $data;
 
-    protected $filename = 'export.csv';
+    protected $filename;
 
-    public function __construct($data = array(), $status = 200, $headers = array())
+    public function __construct($data = array(), $filename, $status = 200, $headers = array())
     {
         parent::__construct('', $status, $headers);
 
+        $this->filename = $filename . '.csv';
         $this->setData($data);
     }
 

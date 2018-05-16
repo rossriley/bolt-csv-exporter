@@ -99,7 +99,9 @@ class Extension extends SimpleExtension
             $csvData[] = array_values($csvRow);
         }
 
-        return new CsvResponse($csvData);
+        $filename = isset($config['file_names'][$ct]) ? $config['file_names'][$ct]: $ct;
+
+        return new CsvResponse($csvData, $filename);
     }
 
     /**
