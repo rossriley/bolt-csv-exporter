@@ -10,7 +10,13 @@ class CsvResponse extends Response
 
     protected $filename = 'export.csv';
 
-    public function __construct($data = array(), $status = 200, $headers = array())
+    /**
+     * CsvResponse constructor.
+     * @param array $data
+     * @param int $status
+     * @param array $headers
+     */
+    public function __construct(array $data = [], $status = 200, array $headers = [])
     {
         parent::__construct('', $status, $headers);
 
